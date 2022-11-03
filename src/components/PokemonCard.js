@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 
 function PokemonCard({ url, name, pokemonFilteredList }) {
   const [pokemon, setPokemon] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchPokemon();
@@ -14,10 +16,18 @@ function PokemonCard({ url, name, pokemonFilteredList }) {
     setPokemon(data);
   };
 
+  const navigateToPokemonCard = () => {
+    navigate(name);
+  };
+
   return (
     <>
       {pokemon ? (
-        <Card className="w-100">
+        <Card
+          style={{ cursor: "pointer" }}
+          onClick={navigateToPokemonCard}
+          className="w-100"
+        >
           <Card.Img src={`${pokemon.sprites.front_default}`}></Card.Img>
           <Card.Body>
             <Card.Title>{pokemon.name}</Card.Title>
