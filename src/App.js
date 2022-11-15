@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { FavoriteProvider } from "./contexts/FavoriteContext";
 import { Navigation } from "./components/Navigation";
-import { Home, PokemonDetails } from "./routes";
+import { Home, PokemonDetails, Favorites } from "./routes";
 import "./styles.css";
 
 const LIMIT = 150;
@@ -33,21 +34,24 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div data-testid="app">
-        <Navigation />
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <Home
-                handleChange={handleChange}
-                pokemonFilteredList={pokemonFilteredList}
-              />
-            }
-          />
-          <Route path="/:name" element={<PokemonDetails />} />
-        </Routes>
-      </div>
+      <FavoriteProvider>
+        <div data-testid="app">
+          <Navigation />
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Home
+                  handleChange={handleChange}
+                  pokemonFilteredList={pokemonFilteredList}
+                />
+              }
+            />
+            <Route path="/:name" element={<PokemonDetails />} />
+            <Route path="/favorites" element={<Favorites />} />
+          </Routes>
+        </div>
+      </FavoriteProvider>
     </BrowserRouter>
   );
 }
