@@ -5,7 +5,7 @@ import { Navigation } from "./components/Navigation";
 import { Home, PokemonDetails, Favorites } from "./routes";
 import "./styles.css";
 
-const LIMIT = 150;
+const LIMIT = 5;
 const pokeApi = `https://pokeapi.co/api/v2/pokemon/?limit=${LIMIT}`;
 
 function App() {
@@ -17,10 +17,14 @@ function App() {
   }, []);
 
   const fetchData = async () => {
-    const res = await fetch(pokeApi);
-    const data = await res.json();
-    setPokemonList(data.results);
-    setPokemonFilteredList(data.results);
+    try {
+      const res = await fetch(pokeApi);
+      const data = await res.json();
+      setPokemonList(data.results);
+      setPokemonFilteredList(data.results);
+    } catch (error) {
+      console.log(`${error.message}`);
+    }
   };
 
   const handleChange = (e) => {

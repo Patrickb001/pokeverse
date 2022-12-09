@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { FavoriteContext } from "../contexts/FavoriteContext";
@@ -7,21 +7,43 @@ import { FavoriteContext } from "../contexts/FavoriteContext";
 function PokemonCard({ url, name, pokemonFilteredList }) {
   const [pokemon, setPokemon] = useState(null);
   const navigate = useNavigate();
-  const { addFavorites } = useContext(FavoriteContext);
+  const {
+    addFavorites,
+    favorites,
+    removeFavorites,
+    pokeFavorite,
+    setPokeFavorite,
+  } = useContext(FavoriteContext);
 
   useEffect(() => {
     fetchPokemon();
+    if (pokeFavorite[name] == undefined) {
+      setPokeFavorite({ ...pokeFavorite, [name]: false });
+    }
   }, []);
+  // console.log(pokeFavorite);
 
   const fetchPokemon = async () => {
-    const res = await fetch(url);
-    const data = await res.json();
-    setPokemon(data);
+    try {
+      const res = await fetch(url);
+      const data = await res.json();
+      setPokemon(data);
+    } catch (error) {
+      console.log(`${error.message}`);
+    }
   };
 
   const addPokemonToFavorites = () => {
     addFavorites(pokemon);
+    setPokeFavorite({ ...pokeFavorite, [name]: true });
+
     console.log(`${pokemon.name} was added to favorites!`);
+  };
+  const removePokemonFromFavorites = () => {
+    removeFavorites(name);
+
+    setPokeFavorite({ ...pokeFavorite, [name]: false });
+    console.log(`${pokemon.name} was removed to favorites!`);
   };
 
   const navigateToPokemonCard = () => {
@@ -31,26 +53,34 @@ function PokemonCard({ url, name, pokemonFilteredList }) {
   return (
     <>
       {pokemon ? (
-        <Card
-          style={{ cursor: "pointer" }}
-          onClick={navigateToPokemonCard}
-          className="w-100"
-        >
-          <Card.Img src={pokemon.sprites.front_default}></Card.Img>
+        <Card style={{ cursor: "pointer" }} className="w-100">
+          <Card.Img
+            onClick={navigateToPokemonCard}
+            src={pokemon.sprites.front_default}
+          ></Card.Img>
           <Card.Body>
-            <Card.Title>{pokemon.name}</Card.Title>
-            <Card.Text as={"div"}>
+            <Card.Title onClick={navigateToPokemonCard}>
+              {pokemon.name}
+            </Card.Title>
+            <Card.Text as={"div"} onClick={navigateToPokemonCard}>
               {pokemon.abilities ? (
                 <ul>
                   {pokemon.abilities.map((pokemonAbility, idx) => (
-                    <li>{pokemonAbility.ability.name}</li>
+                    <li key={idx}>{pokemonAbility.ability.name}</li>
                   ))}
                 </ul>
               ) : (
                 ""
               )}
             </Card.Text>
-            <Button onClick={addPokemonToFavorites}>Add to Favorites</Button>
+            {pokeFavorite[name] ? (
+              <Button onClick={removePokemonFromFavorites} variant="danger">
+                {" "}
+                Remove from Favorites
+              </Button>
+            ) : (
+              <Button onClick={addPokemonToFavorites}>Add to Favorites</Button>
+            )}
           </Card.Body>
         </Card>
       ) : (

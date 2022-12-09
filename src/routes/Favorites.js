@@ -21,7 +21,7 @@ function Favorites() {
                   pokemonFilteredList={favorites}
                   key={idx}
                   name={pokemon.name}
-                  url={pokemon.species.url}
+                  url={`https://pokeapi.co/api/v2/pokemon/${pokemon.id}/`}
                 />
               </Col>
             ))}

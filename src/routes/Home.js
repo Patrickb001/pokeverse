@@ -18,14 +18,13 @@ function Home({ pokemonFilteredList, handleChange }) {
         />
       </InputGroup>
 
-      <h1>Pokemon should appear here</h1>
       <Container>
         <Row sm={3}>
           {pokemonFilteredList.map((pokemon, idx) => (
             <Col className="mb-4" sm="4">
               <PokemonCard
-                pokemonFilteredList={pokemonFilteredList}
                 key={idx}
+                pokemonFilteredList={pokemonFilteredList}
                 name={pokemon.name}
                 url={pokemon.url}
               />
